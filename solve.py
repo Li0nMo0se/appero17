@@ -1,4 +1,5 @@
 # library solve
+from solve_help import *
 
 '''
     First, we take care of the drone.
@@ -11,16 +12,6 @@
         Drone: we suppose the graph might not be eulerian. If it is not eulerian, Thus, we must used the weights.
         // FIXME: Find algo
 '''
-
-
-def adjacency_list(num_vertices, edges_list, is_oriented=False):
-    succ = [[] for _ in range(num_vertices)]
-    for (a, b, _) in edges_list:
-        succ[a].append(b)
-        if not is_oriented:
-            succ[b].append(a)
-    return succ
-
 
 def is_eulerian_non_oriented(num_vertices, edges_list):
     '''
@@ -56,12 +47,44 @@ def is_eulerian_non_oriented(num_vertices, edges_list):
                     seen[d] = True
                     todo.append(d)
         return all(seen[a] or not succ[a] for a in range(num_vertices))
-
+        
     return even_vertices(num_vertices, edges_list) and is_edge_connected(num_vertices, edges_list)
 
 
-def find_eulerian_cycle_non_oriented(num_vertices, edges_list):
-    return False
+def find_eulerian_cycle_non_oriented(num_vertices, edges):
+    '''edges = edges_list
+    print(edges)
+    print('\n')
+    print('Y')
+    print('\n')
+    print(edges_list)
+    print ('\n')'''
+    assert is_eulerian_non_oriented(num_vertices, edges)
+    if len(edges) == 0:
+        return []
+    cycle = [edges[0][0]] # start somewhere
+    while True:
+        rest = []
+        for (a, b) in edges:
+            if cycle[-1] == a:
+                cycle.append(b)
+            elif cycle[-1] == b:
+                cycle.append(a)
+            else:
+                rest.append((a,b))
+        if not rest:
+            assert cycle[0] == cycle[-1]
+            return cycle[0:-1]
+        edges = rest
+        if cycle[0] == cycle[-1]:
+            # Rotate the cycle so that the last state
+            # has some outgoing edge in EDGES.
+            for (a, b) in edges:
+                if a in cycle:
+                    idx = cycle.index(a)
+                    cycle = cycle[idx:-1] + cycle[0:idx+1]
+                    break
+
 
 
 def solve(is_oriented, num_vertices, edges_list):
