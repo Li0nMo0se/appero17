@@ -14,12 +14,13 @@
 
 
 def adjacency_list(num_vertices, edges_list, is_oriented=False):
-    succ = [[] for a in range(num_vertices)]
-    for (a, b) in edges_list:
+    succ = [[] for _ in range(num_vertices)]
+    for (a, b, _) in edges_list:
         succ[a].append(b)
         if not is_oriented:
             succ[b].append(a)
     return succ
+
 
 def is_eulerian_non_oriented(num_vertices, edges_list):
     '''
@@ -29,9 +30,10 @@ def is_eulerian_non_oriented(num_vertices, edges_list):
     :param edges_list:
     :return: boolean whether the graph is eulerian
     '''
+
     def even_vertices(num_vertices, edges_list):
         deg = [0] * num_vertices
-        for (a, b) in edges_list:
+        for (a, b, _) in edges_list:
             deg[a] += 1
             deg[b] += 1
         for a in range(num_vertices):
@@ -44,18 +46,19 @@ def is_eulerian_non_oriented(num_vertices, edges_list):
             return True
         succ = adjacency_list(num_vertices, edges_list)
         seen = [False] * num_vertices
-        init = edges_list[0][0] # random vertex
+        init = edges_list[0][0]  # random vertex
         seen[init] = True
         todo = [init]
         while todo:
             s = todo.pop()
-            for d in succ(s):
+            for d in succ[s]:
                 if not seen[d]:
                     seen[d] = True
                     todo.append(d)
         return all(seen[a] or not succ[a] for a in range(num_vertices))
 
     return even_vertices(num_vertices, edges_list) and is_edge_connected(num_vertices, edges_list)
+
 
 def find_eulerian_cycle_non_oriented(num_vertices, edges_list):
     return False
