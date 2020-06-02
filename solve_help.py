@@ -13,6 +13,7 @@ def is_eulerian_cycle(num_vertices, edges_list, cycle):
     :param cycle:
     :return:
     """
+
     def consume(begin, end, edges):
         for i in range(len(edges)):
             if begin == edges[i][0] and end == edges[i][1]:
@@ -66,6 +67,27 @@ def even_vertices(num_vertices, edges_list):
         if deg[a] % 2 != 0:  # odd deg, incorrect
             return False
     return True
+
+
+def is_undirected_connected(n, edges):
+    if n == 0:
+        return True
+    # Convert to adjacency list
+    succ = adjacency_list(n, edges, False)
+    # DFS over the graph
+    touched = [False] * n
+    touched[0] = True
+    todo = [0]
+    while todo:
+        s = todo.pop()
+        for d in succ[s]:
+            if not touched[d]:
+                touched[d] = True
+                todo.append(d)
+    somme = sum(touched)
+    if somme == n:
+        return True
+    return False
 
 
 def is_edge_connected(num_vertices, edges_list):

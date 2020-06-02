@@ -1,5 +1,6 @@
 import unittest
 import snowymontreal
+import solve_help
 
 
 class IsEulerianTestCase(unittest.TestCase):
@@ -68,6 +69,22 @@ class OddVerticeTestCase(unittest.TestCase):
 
     def test_odd_vertice_2(self):
         self.assertEqual(snowymontreal.odd_vertices(3, [(1, 1, 0)]), [])
+
+
+class IsConnectedTestCase(unittest.TestCase):
+    def test_is_undirected_connected(self):
+        self.assertEqual(solve_help.is_undirected_connected(4, [(0, 1, 0), (2, 1, 0), (3, 0, 0), (3, 1, 0)]), True)
+
+    def test_is_undirected_connected_2(self):
+        self.assertEqual(solve_help.is_undirected_connected(5, [(0, 1, 0), (2, 1, 0), (2, 0, 0), (4, 3, 0)]), False)
+
+
+class IsEdgeConnectedTestCase(unittest.TestCase):
+    def test_is_edge_undirected_connected(self):
+        self.assertEqual(solve_help.is_edge_connected(5, [(0, 1, 0), (4, 1, 0), (3, 0, 0), (3, 1, 0)]), True)
+
+    def test_is_edge_undirected_connected_2(self):
+        self.assertEqual(solve_help.is_edge_connected(4, [(0, 1, 0), (3, 2, 0)]), False)
 
 
 class SolveTestcase(unittest.TestCase):
