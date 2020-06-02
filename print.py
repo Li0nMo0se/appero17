@@ -16,5 +16,3 @@ def print_graph(num_vertices, edges_list, is_oriented = False):
         dot.edge(str(a),str(b))
 
     dot.view()
-
-print_graph(2, [(0,1)])
