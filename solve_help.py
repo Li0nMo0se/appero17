@@ -1,7 +1,7 @@
 # library solve
 
 """
-    Contain some functions needed by solve.py
+    Contain some functions needed by snowymontreal.py
 """
 
 
