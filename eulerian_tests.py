@@ -86,10 +86,18 @@ class IsEdgeConnectedTestCase(unittest.TestCase):
     def test_is_edge_undirected_connected_2(self):
         self.assertEqual(solve_help.is_edge_connected(4, [(0, 1, 0), (3, 2, 0)]), False)
 
+# TODO
+class EulerizeTestCase(unittest.TestCase):
+    pass
 
 class SolveTestcase(unittest.TestCase):
     # TODO
-    pass
+
+    def test_solve_undirected_square(self):
+        num_vertices = 5
+        edges_list = [(0, 1, 3), (1, 2, 1), (2, 3, 6), (3, 0, 2), (0, 4, 8), (1, 4, 1), (2, 4, 3), (3, 4, 4)]
+        cycle = snowymontreal.solve(False, num_vertices, edges_list)
+        self.assertEqual(solve_help.is_eulerian_cycle(num_vertices, edges_list, cycle), True)
 
 
 """
