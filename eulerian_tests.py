@@ -111,6 +111,48 @@ class SolveTestcase(unittest.TestCase):
         self.assertEqual(solve_help.is_eulerian_cycle(num_vertices,
               edges_list, is_oriented, cycle), True)
 
+    def test_solve_undirected_1(self):
+        is_oriented = False
+        num_vertices = 6
+        edges_list = [(0, 1, 1), (0, 3, 1), (0, 4, 4), (1, 2, 2), (1, 4, 3), (2, 5, 1), (3, 4, 2), (4, 5, 1), (5, 2, 56)]
+        cycle = snowymontreal.solve(is_oriented, num_vertices, edges_list)
+        self.assertEqual(solve_help.is_eulerian_cycle(num_vertices, edges_list, is_oriented, cycle), True)
+
+    def test_solve_undirected_2(self):
+        is_oriented = False
+        num_vertices = 5
+        edges_list = [(0, 1, 1), (1, 0, 3), (3, 2, 1), (1, 4, 4), (4, 3, 2), (3, 4, 2)]
+        cycle = snowymontreal.solve(is_oriented, num_vertices, edges_list)
+        self.assertEqual(solve_help.is_eulerian_cycle(num_vertices, edges_list, is_oriented, cycle), True)
+
+    def test_solve_undirected_3(self):
+        is_oriented = False
+        num_vertices = 4
+        edges_list = [(0, 3, 2), (0, 1, 1), (1, 2, 12), (2, 0, 4)]
+        cycle = snowymontreal.solve(is_oriented, num_vertices, edges_list)
+        self.assertEqual(solve_help.is_eulerian_cycle(num_vertices, edges_list, is_oriented, cycle), True)
+
+    def test_solve_undirected_4(self):
+        is_oriented = False
+        num_vertices = 5
+        edges_list = [(0, 1, 7), (1, 0, 3), (3, 2, 1), (1, 4, 4), (4, 3, 3), (3, 4, 2), (0, 3, 1)]
+        cycle = snowymontreal.solve(is_oriented, num_vertices, edges_list)
+        self.assertEqual(solve_help.is_eulerian_cycle(num_vertices, edges_list, is_oriented, cycle), True)
+
+    def test_solve_undirected_5(self):
+        is_oriented = False
+        num_vertices = 9
+        edges_list = [(1, 2, 3), (1, 7, 8), (2, 3, 6), (2, 4, 4), (3, 4, 1), (3, 5, 2), (3, 7, 1), (4, 8, 4), (5, 6, 3), (5, 0, 1), (6, 0, 2), (6, 7, 6)]
+        cycle = snowymontreal.solve(is_oriented, num_vertices, edges_list)
+        self.assertEqual(solve_help.is_eulerian_cycle(num_vertices, edges_list, is_oriented, cycle), True)
+
+    def test_solve_undirected_6(self):
+        is_oriented = False
+        num_vertices = 5
+        edges_list = [(0, 1, 1), (1, 2, 3), (2, 3, 2), (3, 0, 2), (1, 4, 1), (4, 2, 4), (0, 3, 1)]
+        cycle = snowymontreal.solve(is_oriented, num_vertices, edges_list)
+        self.assertEqual(solve_help.is_eulerian_cycle(num_vertices, edges_list, is_oriented, cycle), True)
+
 
 """
     To run the unit tests, do 'python3 -m unittest eulerian_test.py'
