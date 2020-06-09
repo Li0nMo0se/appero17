@@ -1,4 +1,5 @@
 # library solve
+import math
 
 """
     Contain some functions needed by snowymontreal.py
@@ -38,9 +39,10 @@ def is_eulerian_cycle(num_vertices, edges_list, cycle):
     return edges_list == []
 
 
-def odd_vertices(num_vertices, edges_list):
+def odd_vertices(num_vertices, edges_list, is_oriented=False):
     """
     Return a list of the odd vertices
+    :param is_oriented:
     :param num_vertices:
     :param edges_list:
     :return: list
@@ -48,7 +50,8 @@ def odd_vertices(num_vertices, edges_list):
     deg = [0] * num_vertices
     for (a, b, _) in edges_list:
         deg[a] += 1
-        deg[b] += 1
+        if not is_oriented:
+            deg[b] += 1
     return [a for a in range(num_vertices) if deg[a] % 2]
 
 
@@ -127,3 +130,36 @@ def adjacency_list(num_vertices, edges_list, is_oriented=False):
         if not is_oriented:
             succ[b].append(a)
     return succ
+
+
+def find_shortest_path(num_vertices, edges_list, src, dst, is_oriented=False):
+    if not is_oriented:
+        # Classic Bellman-Ford for undirected graphs
+        dist = [math.inf] * num_vertices
+        dist[src] = 0
+        parent = list(range(num_vertices))
+        for k in range(num_vertices - 1):
+            for (s, d, w) in edges_list:
+                if dist[d] > dist[s] + w:
+                    parent[d] = (s, w)
+                    dist[d] = dist[s] + w
+                if not is_oriented and dist[s] > dist[d] + w:
+                    parent[s] = (d, w)
+                    dist[s] = dist[d] + w
+
+        # src not connected to dst
+        if dist[dst] == math.inf:
+            return None
+
+        # Extra loop to detect negative cycles
+        for (s, d, w) in edges_list:
+            if dist[d] > dist[s] + w or (not is_oriented and dist[s] > dist[d] + w):
+                return None
+
+        # Build the shortest-path from parents
+        # In addition, store the cost
+        sp = [(dst, 0)]
+        while dst != src:
+            dst, cost = parent[dst]
+            sp.insert(0, (dst, cost))
+        return sp

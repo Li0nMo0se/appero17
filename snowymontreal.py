@@ -62,6 +62,28 @@ def find_eulerian_cycle_non_oriented(num_vertices, edges_list):
                 must_continue = True
     return cycle
 
+
+def eulerize(num_vertices, edges_list, is_oriented=False):
+    """
+    Update a undirected graph to eulerian graph. Will modify the graph itself by adding edges.
+    If the graph is already an eulerian graph. Nothing is updated.
+    :param is_oriented:
+    :param num_vertices:
+    :param edges_list:
+    :return: None
+    """
+    odd = odd_vertices(num_vertices, edges_list, is_oriented)
+    for i in range(0, len(odd) - 1, 2):
+        first_vertex = odd[i]
+        second_vertex = odd[i + 1]
+        path = find_shortest_path(num_vertices, edges_list, first_vertex, second_vertex)
+        # Create the new edges according to the path
+        for v in range(0, len(path) - 1):
+            src, cost = path[v]
+            dst, _ = path[v + 1]
+            edges_list.append((src, dst, cost))  # does not take care of the costs
+
+
 """
     First, we take care of the drone.
     The graph used for the drone is a non-oriented graph
@@ -71,8 +93,13 @@ def find_eulerian_cycle_non_oriented(num_vertices, edges_list):
 
     2) second implementation
         Drone: we suppose the graph might not be eulerian. If it is not eulerian, we might use an edge several times.
-        Thus, we want to use the weights to minimize the cost
-        // FIXME: Find algo
+        We want to find a path that uses every edges at least once. In this case, we have to create additional edges in
+        order to make the graph eulerian.
+
+    3) third implementation:
+        Now, we want to use the weights to minimize the cost. Also, weights corresponds to a distance and a distance is
+        always positive. So, the weights are also always positive. We won't encounter negative cycles.
+        We try to be smarter in the way we create the additional edges by minimizing the cost of the created edges.
 """
 
 
@@ -81,15 +108,14 @@ def solve(is_oriented, num_vertices, edges_list):
     Main function of the library solve
     Find the most optimized path (usually a cycle)
     There are several ways to find the best path depending of the type of the graph
+    We suppose the graph is edge connected
     :param is_oriented:
     :param num_vertices:
     :param edges_list:
     :return: the path found (as a list of vertex)
     """
     if not is_oriented:
-        if is_eulerian_non_oriented(num_vertices, edges_list):
-            return find_eulerian_cycle_non_oriented(num_vertices, edges_list)
-        else:
-            raise NotImplementedError
+        eulerize(num_vertices, edges_list, is_oriented)
+        return find_eulerian_cycle_non_oriented(num_vertices, edges_list)
     else:
         raise NotImplementedError
