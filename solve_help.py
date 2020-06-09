@@ -6,9 +6,10 @@ import math
 """
 
 
-def is_eulerian_cycle(num_vertices, edges_list, cycle):
+def is_eulerian_cycle(num_vertices, edges_list, is_oriented, cycle):
     """
     Check whether the given cycle is an eulerian cycle in the given graph
+    :param is_oriented:
     :param num_vertices:
     :param edges_list:
     :param cycle:
@@ -20,7 +21,7 @@ def is_eulerian_cycle(num_vertices, edges_list, cycle):
             if begin == edges[i][0] and end == edges[i][1]:
                 edges.pop(i)
                 return True
-            if begin == edges[i][1] and end == edges[i][0]:
+            if not is_oriented and begin == edges[i][1] and end == edges[i][0]:
                 edges.pop(i)
                 return True
         return False
@@ -55,9 +56,10 @@ def odd_vertices(num_vertices, edges_list, is_oriented=False):
     return [a for a in range(num_vertices) if deg[a] % 2]
 
 
-def even_vertices(num_vertices, edges_list):
+def even_vertices(num_vertices, edges_list, is_oriented=False):
     """
     Check whether the vertices of the graph have all a even degree
+    :param is_oriented:
     :param num_vertices:
     :param edges_list:
     :return: boolean
@@ -65,18 +67,19 @@ def even_vertices(num_vertices, edges_list):
     deg = [0] * num_vertices
     for (a, b, _) in edges_list:
         deg[a] += 1
-        deg[b] += 1
+        if not is_oriented:
+            deg[b] += 1
     for a in range(num_vertices):
         if deg[a] % 2 != 0:  # odd deg, incorrect
             return False
     return True
 
 
-def is_undirected_connected(n, edges):
+def is_connected(n, edges, is_oriented=False):
     if n == 0:
         return True
     # Convert to adjacency list
-    succ = adjacency_list(n, edges, False)
+    succ = adjacency_list(n, edges, is_oriented)
     # DFS over the graph
     touched = [False] * n
     touched[0] = True
@@ -93,17 +96,18 @@ def is_undirected_connected(n, edges):
     return False
 
 
-def is_edge_connected(num_vertices, edges_list):
+def is_edge_connected(num_vertices, edges_list, is_oriented=False):
     """
     Check whether is the graph is edge connected.
     A graph is edge connected if all edges can be visited from one
+    :param is_oriented:
     :param num_vertices:
     :param edges_list:
     :return: true if the graph is connected, false otherwise
     """
     if num_vertices == 0 or len(edges_list) == 0:
         return True
-    succ = adjacency_list(num_vertices, edges_list)
+    succ = adjacency_list(num_vertices, edges_list, is_oriented)
     seen = [False] * num_vertices
     init = edges_list[0][0]  # random vertex
     seen[init] = True
