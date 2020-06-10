@@ -40,39 +40,47 @@ def is_eulerian_cycle(num_vertices, edges_list, is_oriented, cycle):
     return edges_list == []
 
 
-def odd_vertices(num_vertices, edges_list, is_oriented=False):
+def odd_vertices_undirected(num_vertices, edges_list):
     """
-    Return a list of the odd vertices
+    Check whether the vertices are odd
+    :param num_vertices:
+    :param edges_list:
+    :return: list of odd vertices
+    """
+    deg = [0] * num_vertices
+    for (a, b, _) in edges_list:
+        deg[a] += 1
+        deg[b] += 1
+    return [a for a in range(num_vertices) if deg[a] % 2]
+
+def test_vertices_eulerian(num_vertices, edges_list, is_oriented=False):
+    """
+    Check whether the vertices comply with an eulerian graph requirements
+    if not is_oriented: Only even vertices
+    if is_oriented: in_deg equals with out_deg for each vertex
     :param is_oriented:
     :param num_vertices:
     :param edges_list:
     :return: list
     """
-    deg = [0] * num_vertices
-    for (a, b, _) in edges_list:
-        deg[a] += 1
-        if not is_oriented:
-            deg[b] += 1
-    return [a for a in range(num_vertices) if deg[a] % 2]
 
+    def in_out_deg_directed(num_vertices, edges_list):
+        """
+        :param num_vertices:
+        :param edges_list:
+        :return:
+        """
+        in_deg = [0] * num_vertices
+        out_deg = [0] * num_vertices
+        for (a, b, _) in edges_list:
+            out_deg[a] += 1
+            in_deg[b] += 1
+        return [a for a in range(num_vertices) if in_deg[a] != out_deg[a]]
 
-def even_vertices(num_vertices, edges_list, is_oriented=False):
-    """
-    Check whether the vertices of the graph have all a even degree
-    :param is_oriented:
-    :param num_vertices:
-    :param edges_list:
-    :return: boolean
-    """
-    deg = [0] * num_vertices
-    for (a, b, _) in edges_list:
-        deg[a] += 1
-        if not is_oriented:
-            deg[b] += 1
-    for a in range(num_vertices):
-        if deg[a] % 2 != 0:  # odd deg, incorrect
-            return False
-    return True
+    if is_oriented:
+        return len(in_out_deg_directed(num_vertices, edges_list)) == 0
+    else:
+        return len(odd_vertices_undirected(num_vertices, edges_list)) == 0
 
 
 def is_connected(n, edges, is_oriented=False):

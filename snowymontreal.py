@@ -11,7 +11,7 @@ def is_eulerian(num_vertices, edges_list, is_oriented=False):
     :param edges_list:
     :return: boolean whether the graph is eulerian
     """
-    return even_vertices(num_vertices, edges_list, is_oriented) \
+    return test_vertices_eulerian(num_vertices, edges_list, is_oriented) \
            and is_edge_connected(num_vertices, edges_list, is_oriented)
 
 
@@ -67,24 +67,30 @@ def find_eulerian_cycle(num_vertices, edges_list, is_oriented=False):
 
 def eulerize(num_vertices, edges_list, is_oriented=False):
     """
-    Update a undirected graph to eulerian graph. Will modify the graph itself by adding edges.
+    Update a undirected graph to eulerian graph. Will modify the graph itself
+    by adding edges.
     If the graph is already an eulerian graph. Nothing is updated.
     :param is_oriented:
     :param num_vertices:
     :param edges_list:
     :return: None
     """
-    odd = odd_vertices(num_vertices, edges_list, is_oriented)
-    for i in range(0, len(odd) - 1, 2):
-        first_vertex = odd[i]
-        second_vertex = odd[i + 1]
-        path = find_shortest_path(num_vertices, edges_list, first_vertex,
-                                  second_vertex)
-        # Create the new edges according to the path
-        for v in range(0, len(path) - 1):
-            src, cost = path[v]  # cost from src to dst
-            dst, _ = path[v + 1]
-            edges_list.append((src, dst, cost))
+
+    # FIXME: eulerize oriented graph
+    if not is_oriented:
+        odd = odd_vertices_undirected(num_vertices, edges_list)
+        for i in range(0, len(odd) - 1, 2):
+            first_vertex = odd[i]
+            second_vertex = odd[i + 1]
+            path = find_shortest_path(num_vertices, edges_list, first_vertex,
+                                      second_vertex)
+            # Create the new edges according to the path
+            for v in range(0, len(path) - 1):
+                src, cost = path[v]  # cost from src to dst
+                dst, _ = path[v + 1]
+                edges_list.append((src, dst, cost))
+    else:
+        raise NotImplementedError
 
 
 """
