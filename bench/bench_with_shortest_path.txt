@@ -1,0 +1,17 @@
+bench_with_shortest_path
++---------------------------+--------+-------------+------+----------+----------+---------+
+| Marker                    | Method |        Line | Hits | Avg Time |  Runtime | Percent |
++---------------------------+--------+-------------+------+----------+----------+---------+
+| 1 vertices, 0 edges       | solve  | bench.py:17 |    1 |  0.00003 |  0.00003 |    0.00 |
+| 25 vertices, 188 edges    | solve  | bench.py:17 |    1 |  0.00367 |  0.00367 |    0.00 |
+| 50 vertices, 676 edges    | solve  | bench.py:17 |    1 |  0.05536 |  0.05536 |    0.07 |
+| 75 vertices, 1487 edges   | solve  | bench.py:17 |    1 |  0.25406 |  0.25406 |    0.32 |
+| 100 vertices, 2592 edges  | solve  | bench.py:17 |    1 |  0.93733 |  0.93733 |    1.17 |
+| 125 vertices, 3957 edges  | solve  | bench.py:17 |    1 |  2.06221 |  2.06221 |    2.56 |
+| 150 vertices, 5744 edges  | solve  | bench.py:17 |    1 |  4.22280 |  4.22280 |    5.25 |
+| 175 vertices, 7813 edges  | solve  | bench.py:17 |    1 |  7.19095 |  7.19095 |    8.94 |
+| 200 vertices, 10163 edges | solve  | bench.py:17 |    1 | 13.99856 | 13.99856 |   17.40 |
+| 225 vertices, 12772 edges | solve  | bench.py:17 |    1 | 19.45044 | 19.45044 |   24.18 |
+| 250 vertices, 15878 edges | solve  | bench.py:17 |    1 | 32.26552 | 32.26552 |   40.11 |
++---------------------------+--------+-------------+------+----------+----------+---------+
+Total runtime: 80.44093
