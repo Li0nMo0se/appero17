@@ -1,9 +1,21 @@
-# library solve
 import math
 
 """
-    Contain some functions needed by snowymontreal.py
+# TODO
 """
+
+
+def is_eulerian(num_vertices, edges_list, is_oriented=False):
+    """
+    A graph is eulerian if it has a eulerian cycle.
+    Or if all degrees are even and the edges are all connected
+    :param is_oriented:
+    :param num_vertices:
+    :param edges_list:
+    :return: boolean whether the graph is eulerian
+    """
+    return test_vertices_eulerian(num_vertices, edges_list, is_oriented) \
+           and is_edge_connected(num_vertices, edges_list, is_oriented)
 
 
 def is_eulerian_cycle(num_vertices, edges_list, is_oriented, cycle):
@@ -13,7 +25,7 @@ def is_eulerian_cycle(num_vertices, edges_list, is_oriented, cycle):
     :param num_vertices:
     :param edges_list:
     :param cycle:
-    :return:
+    :return: boolean
     """
 
     def consume(begin, end, edges):
@@ -52,6 +64,7 @@ def odd_vertices_undirected(num_vertices, edges_list):
         deg[a] += 1
         deg[b] += 1
     return [a for a in range(num_vertices) if deg[a] % 2]
+
 
 def test_vertices_eulerian(num_vertices, edges_list, is_oriented=False):
     """
@@ -165,7 +178,8 @@ def find_shortest_path(num_vertices, edges_list, src, dst, is_oriented=False):
 
         # Extra loop to detect negative cycles
         for (s, d, w) in edges_list:
-            if dist[d] > dist[s] + w or (not is_oriented and dist[s] > dist[d] + w):
+            if dist[d] > dist[s] + w or (
+                    not is_oriented and dist[s] > dist[d] + w):
                 return None
 
         # Build the shortest-path from parents
@@ -175,3 +189,99 @@ def find_shortest_path(num_vertices, edges_list, src, dst, is_oriented=False):
             dst, cost = parent[dst]
             sp.insert(0, (dst, cost))
         return sp
+
+
+def find_eulerian_cycle(num_vertices, edges_list, is_oriented=False):
+    """
+    Find an eulerian cycle in the given graph (oriented or not)
+    The cycle is not unique
+    Find several cycles until we find the longest cycle (the whole graph)
+    :param num_vertices:
+    :param edges_list:
+    :param is_oriented:
+    :return: an eulerian cycle
+    """
+
+    def consume(curr, edges, is_oriented, seen, cycle, first=-1):
+        """
+        Consume the current vertex.
+        If a cycle is done, return false
+        Otherwise, continue to consume until the cycle is done
+        Actually, this function find a cycle in the graph according to what
+        have been already seen
+        """
+        cycle.append(curr)
+        if first == -1:
+            first = curr
+        elif curr == first:  # cycle done
+            return False
+        for i in range(len(edges)):
+            if seen[i]:
+                continue
+            if edges[i][0] == curr:
+                seen[i] = True
+                consume(edges[i][1], edges, is_oriented, seen, cycle, first)
+                return True
+            elif not is_oriented and edges[i][1] == curr:
+                seen[i] = True
+                consume(edges[i][0], edges, is_oriented, seen, cycle, first)
+                return True
+        return False
+
+    # it must be an eulerian graph
+    # assert is_eulerian(num_vertices, edges_list, is_oriented)
+
+    # Specific cases
+    if not edges_list:
+        return []
+    if len(edges_list) == 1:
+        return [edges_list[0][0]]
+
+    # General case
+    seen = [False] * len(edges_list)
+    cycle = []
+    consume(edges_list[0][0], edges_list, is_oriented, seen, cycle)
+    cycle.pop()
+    must_continue = True
+    while must_continue:
+        for i in range(len(cycle)):
+            new_cycle = []
+            if not consume(cycle[i], edges_list, is_oriented, seen, new_cycle):
+                continue
+            new_cycle.pop()
+            cycle[i:i] = new_cycle
+            break
+        must_continue = False
+        for seen_ in seen:
+            if not seen_:
+                must_continue = True
+    return cycle
+
+
+def eulerize(num_vertices, edges_list, is_oriented=False):
+    """
+    Update a undirected graph to an eulerian graph. It will modify the graph
+    itself by adding edges.
+    If the graph is already an eulerian graph. Nothing is updated.
+
+    # TODO explain the algorithm
+    :param is_oriented:
+    :param num_vertices:
+    :param edges_list:
+    """
+
+    # TODO: eulerize oriented graph
+    if not is_oriented:
+        odd = odd_vertices_undirected(num_vertices, edges_list)
+        for i in range(0, len(odd) - 1, 2):
+            first_vertex = odd[i]
+            second_vertex = odd[i + 1]
+            path = find_shortest_path(num_vertices, edges_list, first_vertex,
+                                      second_vertex)
+            # Create the new edges according to the path
+            for v in range(0, len(path) - 1):
+                src, cost = path[v]  # cost from src to dst
+                dst, _ = path[v + 1]
+                edges_list.append((src, dst, cost))
+    else:
+        raise NotImplementedError
