@@ -55,4 +55,4 @@ def solve(is_oriented, num_vertices, edges_list):
     :return: the path found (as a list of vertex)
     """
     eulerize(num_vertices, edges_list, is_oriented)
-    return find_eulerian_cycle(num_vertices, edges_list, is_oriented=False)
+    return find_eulerian_cycle(num_vertices, edges_list, is_oriented)
