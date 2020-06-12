@@ -66,32 +66,37 @@ def odd_vertices_undirected(num_vertices, edges_list):
     return [a for a in range(num_vertices) if deg[a] % 2]
 
 
+def in_out_deg_directed(num_vertices, edges_list):
+    """
+    Computer the in degrees and out degrees of a directed graph
+    :param num_vertices:
+    :param edges_list:
+    :return:
+    """
+    in_deg = [0] * num_vertices
+    out_deg = [0] * num_vertices
+    for (a, b, _) in edges_list:
+        out_deg[a] += 1
+        in_deg[b] += 1
+    return in_deg, out_deg
+
+
 def test_vertices_eulerian(num_vertices, edges_list, is_oriented=False):
     """
     Check whether the vertices comply with an eulerian graph requirements
     if not is_oriented: Only even vertices
-    if is_oriented: in_deg equals with out_deg for each vertex
+    if is_oriented: in_deg equals with out_deg for each vertex. In other words,
+    every vertices are balanced
     :param is_oriented:
     :param num_vertices:
     :param edges_list:
     :return: list
     """
 
-    def in_out_deg_directed(num_vertices, edges_list):
-        """
-        :param num_vertices:
-        :param edges_list:
-        :return:
-        """
-        in_deg = [0] * num_vertices
-        out_deg = [0] * num_vertices
-        for (a, b, _) in edges_list:
-            out_deg[a] += 1
-            in_deg[b] += 1
-        return [a for a in range(num_vertices) if in_deg[a] != out_deg[a]]
-
     if is_oriented:
-        return len(in_out_deg_directed(num_vertices, edges_list)) == 0
+        in_deg, out_deg = in_out_deg_directed(num_vertices, edges_list)
+        unbalanced = [a for a in range(num_vertices) if in_deg[a] != out_deg[a]]
+        return len(unbalanced) == 0
     else:
         return len(odd_vertices_undirected(num_vertices, edges_list)) == 0
 
@@ -158,37 +163,136 @@ def adjacency_list(num_vertices, edges_list, is_oriented=False):
 
 
 def find_shortest_path(num_vertices, edges_list, src, dst, is_oriented=False):
-    if not is_oriented:
-        # Classic Bellman-Ford for undirected graphs
-        dist = [math.inf] * num_vertices
-        dist[src] = 0
-        parent = list(range(num_vertices))
-        for k in range(num_vertices - 1):
-            for (s, d, w) in edges_list:
-                if dist[d] > dist[s] + w:
-                    parent[d] = (s, w)
-                    dist[d] = dist[s] + w
-                if not is_oriented and dist[s] > dist[d] + w:
-                    parent[s] = (d, w)
-                    dist[s] = dist[d] + w
+    # Classic Bellman-Ford for undirected graphs
+    dist = [math.inf] * num_vertices
+    dist[src] = 0
+    parent = list(range(num_vertices))
+    for k in range(num_vertices - 1):
+        for (s, d, w) in edges_list:
+            if dist[d] > dist[s] + w:
+                parent[d] = (s, w)
+                dist[d] = dist[s] + w
+            if not is_oriented and dist[s] > dist[d] + w:
+                parent[s] = (d, w)
+                dist[s] = dist[d] + w
 
-        # src not connected to dst
-        if dist[dst] == math.inf:
+    # src not connected to dst
+    if dist[dst] == math.inf:
+        return None
+
+    # Extra loop to detect negative cycles
+    for (s, d, w) in edges_list:
+        if dist[d] > dist[s] + w or (
+                not is_oriented and dist[s] > dist[d] + w):
             return None
 
-        # Extra loop to detect negative cycles
-        for (s, d, w) in edges_list:
-            if dist[d] > dist[s] + w or (
-                    not is_oriented and dist[s] > dist[d] + w):
-                return None
+    # Build the shortest-path from parents
+    # In addition, store the cost
+    sp = [(dst, 0)]
+    while dst != src:
+        dst, cost = parent[dst]
+        sp.insert(0, (dst, cost))
+    return sp
 
-        # Build the shortest-path from parents
-        # In addition, store the cost
-        sp = [(dst, 0)]
-        while dst != src:
-            dst, cost = parent[dst]
-            sp.insert(0, (dst, cost))
-        return sp
+
+def floyd_warshall(num_vertices, edges_list):
+    """
+    Floyd warshall algorithm for a directed graph
+    Find shortest path from n sources to n destinations
+    There isn't any negastive cycle. Only positive weight
+    :param num_vertices:
+    :param edges_list:
+    :return:
+    """
+
+    def init_mat(num_vertices, edges_list):
+        #  Set up the matrix
+        M = [[math.inf for _ in range(num_vertices)]
+             for _ in range(num_vertices)]
+        #  Matrix for the successors of each vertex
+        succ = [[None for _ in range(num_vertices)]
+                for _ in range(num_vertices)]
+
+        # Diag elems
+        for i in range(num_vertices):
+            M[i][i] = 0
+            succ[i][i] = i
+
+        # Add the edges
+        for (a, b, w) in edges_list:
+            M[a][b] = w
+            succ[a][b] = b
+
+        return M, succ
+
+    M, succ = init_mat(num_vertices, edges_list)
+    for k in range(num_vertices):
+        for s in range(num_vertices):
+            for u in range(num_vertices):
+                old = M[s][u]
+                M[s][u] = min(M[s][u], M[s][k] + M[k][u])
+                if old != M[s][u]:
+                    succ[s][u] = succ[s][k]
+    return M, succ
+
+
+def find_unbalanced_directed(num_vertices, edges_list):
+    """
+    Find the unbalanced vertices
+    A unbalanced vertex is a vertex such that its in_deg != out_deg
+    :param num_vertices:
+    :param edges_list:
+    :return:
+    """
+    in_deg, out_deg = in_out_deg_directed(num_vertices, edges_list)
+
+    # Set of vertices with a positive degree or negative degree
+    delta = []
+    set_pos = []
+    set_neg = []
+    for i in range(num_vertices):
+        curr_delta = out_deg[i] - in_deg[i]
+        delta.append(curr_delta)
+        if curr_delta > 0:
+            set_pos.append(i)
+        elif curr_delta < 0:
+            set_neg.append(i)
+    return delta, set_pos, set_neg
+
+
+def find_feasible(num_vertices, edges_list):
+    f = [[0 for _ in range(num_vertices)] for _ in range(num_vertices)]
+    delta, set_pos, set_neg = find_unbalanced_directed(num_vertices, edges_list)
+    for u in range(len(set_neg)):
+        i = set_neg[u]
+        for v in range(len(set_pos)):
+            j = set_pos[v]
+            if -delta[i] < delta[j]:
+                f[i][j] = -delta[i]
+            else:
+                f[i][j] = delta[j]
+            delta[i] += f[i][j]
+            delta[j] -= f[i][j]
+    return f, set_pos, set_neg
+
+
+def update_graph(edges_list, f, set_pos, set_neg, M, succ):
+
+    def add_edges(edges_list, src, dst, M, succ):
+        if succ[src][dst] is None:
+            return
+
+        while src != dst:
+            tmp = succ[src][dst]
+            edges_list.append((src, tmp, M[src][tmp]))
+            src = tmp
+
+    for u in range(len(set_neg)):
+        i = set_neg[u]
+        for v in range(len(set_pos)):
+            j = set_pos[v]
+            for _ in range(f[i][j]):
+                add_edges(edges_list, i, j, M, succ)
 
 
 def find_eulerian_cycle(num_vertices, edges_list, is_oriented=False):
@@ -270,7 +374,6 @@ def eulerize(num_vertices, edges_list, is_oriented=False):
     :param edges_list:
     """
 
-    # TODO: eulerize oriented graph
     if not is_oriented:
         odd = odd_vertices_undirected(num_vertices, edges_list)
         for i in range(0, len(odd) - 1, 2):
@@ -284,4 +387,6 @@ def eulerize(num_vertices, edges_list, is_oriented=False):
                 dst, _ = path[v + 1]
                 edges_list.append((src, dst, cost))
     else:
-        raise NotImplementedError
+        M, succ = floyd_warshall(num_vertices, edges_list)
+        f, set_pos, set_neg = find_feasible(num_vertices, edges_list)
+        update_graph(edges_list, f, set_pos, set_neg, M, succ)
