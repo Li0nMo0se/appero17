@@ -53,7 +53,7 @@ def print_graph(num_vertices, edges_list, is_oriented=False, name="graph"):
     dot.view()
 
 
-def print_graph(num_vertices, filename, edges_list, is_oriented=False,
+def save_graph(num_vertices, filename, edges_list, is_oriented=False,
                 name="graph"):
     """
     Save a graph in a file
