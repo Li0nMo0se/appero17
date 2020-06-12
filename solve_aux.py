@@ -218,11 +218,12 @@ def find_eulerian_cycle(num_vertices, edges_list, is_oriented=False):
         for i in range(len(edges)):
             if seen[i]:
                 continue
-            seen[i] = True
             if edges[i][0] == curr:
+                seen[i] = True
                 consume(edges[i][1], edges, is_oriented, seen, cycle, first)
                 return True
             elif not is_oriented and edges[i][1] == curr:
+                seen[i] = True
                 consume(edges[i][0], edges, is_oriented, seen, cycle, first)
                 return True
         return False
