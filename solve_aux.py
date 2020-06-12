@@ -296,70 +296,31 @@ def update_graph(edges_list, f, set_pos, set_neg, M, succ):
 
 
 def find_eulerian_cycle(num_vertices, edges_list, is_oriented=False):
-    """
-    Find an eulerian cycle in the given graph (oriented or not)
-    The cycle is not unique
-    Find several cycles until we find the longest cycle (the whole graph)
-    :param num_vertices:
-    :param edges_list:
-    :param is_oriented:
-    :return: an eulerian cycle
-    """
-
-    def consume(curr, edges, is_oriented, seen, cycle, first=-1):
-        """
-        Consume the current vertex.
-        If a cycle is done, return false
-        Otherwise, continue to consume until the cycle is done
-        Actually, this function find a cycle in the graph according to what
-        have been already seen
-        """
-        cycle.append(curr)
-        if first == -1:
-            first = curr
-        elif curr == first:  # cycle done
-            return False
-        for i in range(len(edges)):
-            if seen[i]:
-                continue
-            if edges[i][0] == curr:
-                seen[i] = True
-                consume(edges[i][1], edges, is_oriented, seen, cycle, first)
-                return True
-            elif not is_oriented and edges[i][1] == curr:
-                seen[i] = True
-                consume(edges[i][0], edges, is_oriented, seen, cycle, first)
-                return True
-        return False
-
-    # it must be an eulerian graph
-    # assert is_eulerian(num_vertices, edges_list, is_oriented)
-
-    # Specific cases
-    if not edges_list:
+    if len(edges_list) == 0:  # empty graph
         return []
-    if len(edges_list) == 1:
-        return [edges_list[0][0]]
 
-    # General case
-    seen = [False] * len(edges_list)
-    cycle = []
-    consume(edges_list[0][0], edges_list, is_oriented, seen, cycle)
-    cycle.pop()
-    must_continue = True
-    while must_continue:
-        for i in range(len(cycle)):
-            new_cycle = []
-            if not consume(cycle[i], edges_list, is_oriented, seen, new_cycle):
-                continue
-            new_cycle.pop()
-            cycle[i:i] = new_cycle
-            break
-        must_continue = False
-        for seen_ in seen:
-            if not seen_:
-                must_continue = True
-    return cycle
+    cycle = [edges_list[0][0]]  # start somewhere
+    while True:
+        remaining = []
+        for (a, b, w) in edges_list:
+            if cycle[-1] == a:
+                cycle.append(b)
+            elif not is_oriented and cycle[-1] == b:
+                cycle.append(a)
+            else:
+                remaining.append((a, b, w))
+        if not remaining:
+            return cycle[0:-1]
+
+        edges_list = remaining
+        if cycle[0] == cycle[-1]:
+            # Rotate the cycle so that the last state
+            # has some outgoing edge in EDGES.
+            for (a, b, w) in edges_list:
+                if a in cycle:
+                    idx = cycle.index(a)
+                    cycle = cycle[idx:-1] + cycle[0:idx+1]
+                    break
 
 
 def eulerize(num_vertices, edges_list, is_oriented=False):

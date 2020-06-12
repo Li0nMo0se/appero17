@@ -154,7 +154,6 @@ class IsEdgeConnectedTestCase(unittest.TestCase):
         self.assertEqual(sm.is_edge_connected(4, [(0, 1, 0), (3, 2, 0)]), False)
 
 
-# TODO
 class EulerizeTestCase(unittest.TestCase):
     def test_eulerize_undirected(self):
         edges_list = [(0, 2, 0), (0, 4, 3), (0, 5, 0), (1, 4, 2), (1, 5, 1),
