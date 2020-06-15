@@ -24,4 +24,5 @@ Then **solve** can be used this way: `snowymontreal.solve(...)`
 * Cheick
 * Arnaud
 * Kenz
+* Antoine
 * ilan.guenet
