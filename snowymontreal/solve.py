@@ -1,5 +1,5 @@
 # library snowymontreal
-from solve_aux import *
+from snowymontreal.solve_aux import *
 
 
 """
