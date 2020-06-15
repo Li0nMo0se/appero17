@@ -1,0 +1,17 @@
+undirected
++---------------------------+------------------+-------------+------+----------+----------+---------+
+| Marker                    | Method           |        Line | Hits | Avg Time |  Runtime | Percent |
++---------------------------+------------------+-------------+------+----------+----------+---------+
+| 1 vertices, 0 edges       | solve_undirected | bench.py:34 |    1 |  0.00002 |  0.00002 |    0.00 |
+| 25 vertices, 184 edges    | solve_undirected | bench.py:34 |    1 |  0.00360 |  0.00360 |    0.00 |
+| 50 vertices, 676 edges    | solve_undirected | bench.py:34 |    1 |  0.05727 |  0.05727 |    0.07 |
+| 75 vertices, 1492 edges   | solve_undirected | bench.py:34 |    1 |  0.27124 |  0.27124 |    0.33 |
+| 100 vertices, 2576 edges  | solve_undirected | bench.py:34 |    1 |  0.94181 |  0.94181 |    1.16 |
+| 125 vertices, 3967 edges  | solve_undirected | bench.py:34 |    1 |  2.10396 |  2.10396 |    2.59 |
+| 150 vertices, 5790 edges  | solve_undirected | bench.py:34 |    1 |  4.63038 |  4.63038 |    5.70 |
+| 175 vertices, 7818 edges  | solve_undirected | bench.py:34 |    1 |  7.24568 |  7.24568 |    8.92 |
+| 200 vertices, 10156 edges | solve_undirected | bench.py:34 |    1 | 14.05275 | 14.05275 |   17.30 |
+| 225 vertices, 12784 edges | solve_undirected | bench.py:34 |    1 | 19.53577 | 19.53577 |   24.05 |
+| 250 vertices, 15873 edges | solve_undirected | bench.py:34 |    1 | 32.39882 | 32.39882 |   39.88 |
++---------------------------+------------------+-------------+------+----------+----------+---------+
+Total runtime: 81.24133
