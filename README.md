@@ -11,7 +11,7 @@ This function's signature is `solve(is_oriented, num_vertices, edges_list)` with
 * edges_list: the list of edges such as (**a**, **b**, **w**) is an edge (oriented or not) between **a** and **b** and its weight (cost) is **w**
 
 Returns the most optimized (less costly) path such as every edges of the graph have been visited at least once.
-The path is the cycle. It starts and ends at the same vertex.
+The path is a cycle. It starts and ends at the same vertex.
 
 ### Import
 
