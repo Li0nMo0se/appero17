@@ -322,6 +322,54 @@ def find_eulerian_cycle(num_vertices, edges_list, is_oriented=False):
                     cycle = cycle[idx:-1] + cycle[0:idx+1]
                     break
 
+def sort_odd(num_vertices, edges_list, odd, is_oriented):
+    my_list = []
+    do_continue = False
+    for i in range(len(odd)):
+        for j in range(i + 1, len(odd)):
+            path = find_shortest_path(num_vertices, edges_list, odd[i], odd[j])
+            print(path)
+            if len(path) > 2:
+                for k in odd:
+                    for z in range(1, len(path)):
+                        if (path[1][0] == k):
+                            do_continue = True
+                if (do_continue == True):
+                    do_continue = False
+                    continue
+            for v in range(0, len(path) - 1):
+                src, cost = path[v]  # cost from src to dst
+                dst, _ = path[v + 1]
+                my_list.append((src, dst, cost))
+    Is_read = [False] * len(odd)
+    sum_unread = 0
+    sum_read = 0
+    index_a = 0
+    index_w = 0
+    list_unread = []
+    list_read = []
+    for a, w, d in my_list:
+        is_true = False
+        for i in range(len(odd)):
+            if a == odd[i]:
+                index_a = i
+                if Is_read[i]  == True:
+                    is_true = True
+            if w == odd[i]:
+                index_w = i
+                if Is_read[i] == True:
+                    is_true = True
+        if (is_true == True):
+            sum_read += d
+            list_read.append((a, w, d))
+        else:
+            sum_unread += d
+            Is_read[index_a] = True
+            Is_read[index_w] = True
+            list_unread.append((a, w, d))
+    if (sum_read < sum_unread):
+        return list_read
+    return list_unread
 
 def eulerize(num_vertices, edges_list, is_oriented=False):
     """
@@ -334,8 +382,16 @@ def eulerize(num_vertices, edges_list, is_oriented=False):
     :param num_vertices:
     :param edges_list:
     """
-
+    
     if not is_oriented:
+        '''
+        For Cheick's version use that instead:
+
+        odd = odd_vertices(num_vertices, edges_list, is_oriented)
+        tmp = sort_odd(num_vertices, edges_list, odd, is_oriented)
+        for i in range(len(tmp)):
+        edges_list.append(tmp[i])
+        '''
         odd = odd_vertices_undirected(num_vertices, edges_list)
         for i in range(0, len(odd) - 1, 2):
             first_vertex = odd[i]
