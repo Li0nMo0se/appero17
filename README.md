@@ -21,8 +21,8 @@ Then **solve** can be used this way: `snowymontreal.solve(...)`
 
 ## Members
 
-* Cheick
-* Arnaud
-* Kenz
-* Antoine
+* cheick-tidiane.dia
+* arnaud.lassartesse
+* kenz.narainen
+* antoine.claudel
 * ilan.guenet
