@@ -77,14 +77,14 @@ class FindEulerianCycleTestCase(unittest.TestCase):
     def test_find_eulerian_cycle_non_oriented_short(self):
         g = (4, [(0, 1, 0), (1, 2, 0), (2, 3, 0), (3, 0, 0)], False)
         self.assertEqual(True, sa.is_eulerian_cycle(*g,
-                                              sa.find_eulerian_cycle(*g)))
+                                                    sa.find_eulerian_cycle(*g)))
 
     def test_find_eulerian_cycle_non_oriented_long(self):
         g = (4, [(2, 0, 0), (2, 1, 0), (3, 1, 0), (1, 2, 0), (0, 2, 0),
-                  (2, 3, 0), (3, 0, 0), (3, 2, 0), (0, 1, 0),
-                  (0, 0, 0)], False)
+                 (2, 3, 0), (3, 0, 0), (3, 2, 0), (0, 1, 0),
+                 (0, 0, 0)], False)
         self.assertEqual(True, sa.is_eulerian_cycle(*g,
-                                                   sa.find_eulerian_cycle(*g)))
+                                                    sa.find_eulerian_cycle(*g)))
 
     def test_find_eulerian_cycle_non_oriented_empty(self):
         g = (4, [], False)
@@ -136,14 +136,14 @@ class IsConnectedTestCase(unittest.TestCase):
         num_vertices = 5
         edges_list = [(0, 1, 1), (1, 2, 2), (2, 3, 3), (3, 4, 4), (4, 0, 5)]
         self.assertEqual(sa.is_connected(num_vertices, edges_list,
-                                                is_oriented=is_oriented), True)
+                                         is_oriented=is_oriented), True)
 
     def test_is_directed_eulerian_not_connected(self):
         is_oriented = True
         num_vertices = 6
         edges_list = [(0, 1, 1), (1, 2, 2), (2, 3, 3), (3, 4, 4), (4, 0, 5)]
         self.assertEqual(sa.is_connected(num_vertices, edges_list,
-                                                is_oriented=is_oriented), False)
+                                         is_oriented=is_oriented), False)
 
 
 class IsEdgeConnectedTestCase(unittest.TestCase):
@@ -165,7 +165,7 @@ class EulerizeTestCase(unittest.TestCase):
                                               is_oriented=False))
 
     def test_eulerize_undirected_2(self):
-        edges_list = [(0, 1, 0), (1, 2, 3), (2, 3, 0), (3, 0, 2),(0, 4, 2),
+        edges_list = [(0, 1, 0), (1, 2, 3), (2, 3, 0), (3, 0, 2), (0, 4, 2),
                       (1, 4, 4), (2, 4, 0), (3, 4, 3)]
         num_vertices = 5
         sa.eulerize(num_vertices, edges_list, is_oriented=False)
@@ -179,6 +179,7 @@ class EulerizeTestCase(unittest.TestCase):
         sa.eulerize(num_vertices, edges_list, is_oriented=True)
         self.assertEqual(True, sa.is_eulerian(num_vertices,
                                               edges_list, is_oriented=True))
+
     def test_eulerize_undirected_3(self):
         edges_list = [(0, 1, 7), (1, 2, 6), (2, 3, 9), (3, 0, 8), (0, 4, 4),
                       (1, 4, 2), (2, 4, 3), (3, 4, 5)]
@@ -186,22 +187,68 @@ class EulerizeTestCase(unittest.TestCase):
         sa.eulerize(num_vertices, edges_list, is_oriented=False)
         self.assertEqual(True, sa.is_eulerian(num_vertices, edges_list,
                                               is_oriented=False))
+
+class IsValidTestCase(unittest.TestCase):
+    def test_is_valid_true(self):
+        is_oriented = False
+        num_vertices = 6
+        edges_list = [(0, 1, 1), (0, 3, 1), (0, 4, 4), (1, 2, 2), (1, 4, 3),
+                      (2, 5, 1), (3, 4, 2), (4, 5, 1), (5, 2, 56)]
+        path = [5, 4, 0, 1, 4, 3, 0, 1, 2, 5, 2]
+        self.assertEqual(True, sa.is_valid(num_vertices, edges_list,
+                                           is_oriented, path))
+
+    def test_is_valid_false(self):
+        is_oriented = False
+        num_vertices = 6
+        edges_list = [(0, 1, 1), (0, 3, 1), (0, 4, 4), (1, 2, 2), (1, 4, 3),
+                      (2, 5, 1), (3, 4, 2), (4, 5, 1), (5, 2, 56), (5, 2, 1),
+                      (2, 5, 1)]
+        path = [5, 4, 0, 1, 4, 3, 0, 1, 2, 5, 2]
+        self.assertEqual(False, sa.is_valid(num_vertices, edges_list,
+                                            is_oriented, path))
+
+    def test_is_valid_empty(self):
+        is_oriented = True
+        num_vertices = 1
+        edges_list = []
+        path = []
+        self.assertEqual(True, sa.is_valid(num_vertices, edges_list,
+                                           is_oriented, path))
+
+    def test_is_valid_one_edge(self):
+        is_oriented = True
+        num_vertices = 1
+        edges_list = [(1, 1, 0)]
+        path = [1]
+        self.assertEqual(True, sa.is_valid(num_vertices, edges_list,
+                                           is_oriented, path))
+
+    def test_is_valid_one_edge_two_vertices(self):
+        is_oriented = True
+        num_vertices = 2
+        edges_list = [(1, 1, 0)]
+        path = [1]
+        self.assertEqual(True, sa.is_valid(num_vertices, edges_list,
+                                           is_oriented, path))
+
+
 class SolveTestcase(unittest.TestCase):
     def test_solve_already_undirected_eulerian(self):
         is_oriented = False
         num_vertices = 5
         edges_list = [(0, 1, 1), (1, 2, 2), (2, 3, 3), (3, 4, 4), (4, 0, 5)]
         cycle = sm.solve(is_oriented, num_vertices, edges_list)
-        self.assertEqual(sa.is_eulerian_cycle(num_vertices, edges_list,
-                                              is_oriented, cycle), True)
+        self.assertEqual(sa.is_valid(num_vertices, edges_list,
+                                     is_oriented, cycle), True)
 
     def test_solve_already_directed_eulerian(self):
         is_oriented = True
         num_vertices = 5
         edges_list = [(0, 1, 1), (1, 2, 2), (2, 3, 3), (3, 4, 4), (4, 0, 5)]
         cycle = sm.solve(is_oriented, num_vertices, edges_list)
-        self.assertEqual(sa.is_eulerian_cycle(num_vertices, edges_list,
-                                              is_oriented, cycle), True)
+        self.assertEqual(sa.is_valid(num_vertices, edges_list,
+                                     is_oriented, cycle), True)
 
     def test_solve_undirected_square(self):
         is_oriented = False
@@ -209,8 +256,8 @@ class SolveTestcase(unittest.TestCase):
         edges_list = [(0, 1, 3), (1, 2, 1), (2, 3, 6), (3, 0, 2), (0, 4, 8),
                       (1, 4, 1), (2, 4, 3), (3, 4, 4)]
         cycle = sm.solve(is_oriented, num_vertices, edges_list)
-        self.assertEqual(sa.is_eulerian_cycle(num_vertices, edges_list,
-                                              is_oriented, cycle), True)
+        self.assertEqual(sa.is_valid(num_vertices, edges_list,
+                                     is_oriented, cycle), True)
 
     def test_solve_undirected_1(self):
         is_oriented = False
@@ -218,8 +265,8 @@ class SolveTestcase(unittest.TestCase):
         edges_list = [(0, 1, 1), (0, 3, 1), (0, 4, 4), (1, 2, 2), (1, 4, 3),
                       (2, 5, 1), (3, 4, 2), (4, 5, 1), (5, 2, 56)]
         cycle = sm.solve(is_oriented, num_vertices, edges_list)
-        self.assertEqual(sa.is_eulerian_cycle(num_vertices, edges_list,
-                                              is_oriented, cycle), True)
+        self.assertEqual(sa.is_valid(num_vertices, edges_list,
+                                     is_oriented, cycle), True)
 
     def test_solve_undirected_2(self):
         is_oriented = False
@@ -227,16 +274,16 @@ class SolveTestcase(unittest.TestCase):
         edges_list = [(0, 1, 1), (1, 0, 3), (3, 2, 1), (1, 4, 4), (4, 3, 2),
                       (3, 4, 2)]
         cycle = sm.solve(is_oriented, num_vertices, edges_list)
-        self.assertEqual(sa.is_eulerian_cycle(num_vertices, edges_list,
-                                              is_oriented, cycle), True)
+        self.assertEqual(sa.is_valid(num_vertices, edges_list,
+                                     is_oriented, cycle), True)
 
     def test_solve_undirected_3(self):
         is_oriented = False
         num_vertices = 4
         edges_list = [(0, 3, 2), (0, 1, 1), (1, 2, 12), (2, 0, 4)]
         cycle = sm.solve(is_oriented, num_vertices, edges_list)
-        self.assertEqual(sa.is_eulerian_cycle(num_vertices, edges_list,
-                                              is_oriented, cycle), True)
+        self.assertEqual(sa.is_valid(num_vertices, edges_list,
+                                     is_oriented, cycle), True)
 
     def test_solve_undirected_4(self):
         is_oriented = False
@@ -244,8 +291,8 @@ class SolveTestcase(unittest.TestCase):
         edges_list = [(0, 1, 7), (1, 0, 3), (3, 2, 1), (1, 4, 4), (4, 3, 3),
                       (3, 4, 2), (0, 3, 1)]
         cycle = sm.solve(is_oriented, num_vertices, edges_list)
-        self.assertEqual(sa.is_eulerian_cycle(num_vertices, edges_list,
-                                              is_oriented, cycle), True)
+        self.assertEqual(sa.is_valid(num_vertices, edges_list,
+                                     is_oriented, cycle), True)
 
     def test_solve_undirected_5(self):
         is_oriented = False
@@ -254,8 +301,8 @@ class SolveTestcase(unittest.TestCase):
                       (3, 5, 2), (3, 7, 1), (4, 8, 4), (5, 6, 3), (5, 0, 1),
                       (6, 0, 2), (6, 7, 6)]
         cycle = sm.solve(is_oriented, num_vertices, edges_list)
-        self.assertEqual(sa.is_eulerian_cycle(num_vertices, edges_list,
-                                              is_oriented, cycle), True)
+        self.assertEqual(sa.is_valid(num_vertices, edges_list,
+                                     is_oriented, cycle), True)
 
     def test_solve_undirected_6(self):
         is_oriented = False
@@ -263,8 +310,8 @@ class SolveTestcase(unittest.TestCase):
         edges_list = [(0, 1, 1), (1, 2, 3), (2, 3, 2), (3, 0, 2), (1, 4, 1),
                       (4, 2, 4), (0, 3, 1)]
         cycle = sm.solve(is_oriented, num_vertices, edges_list)
-        self.assertEqual(sa.is_eulerian_cycle(num_vertices, edges_list,
-                                              is_oriented, cycle), True)
+        self.assertEqual(sa.is_valid(num_vertices, edges_list,
+                                     is_oriented, cycle), True)
 
 
 """
