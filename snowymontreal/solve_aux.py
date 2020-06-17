@@ -1,8 +1,66 @@
 import math
 
-"""
-# TODO
-"""
+
+def is_valid(num_vertices, edges_list, is_oriented, path):
+    def find_next(index, u, v):
+        """
+        Find an edge that has never been seen
+        """
+        index += 1
+        while index < len(edges_list):
+            if not edges_seen[index]:
+                (a, b, _) = edges_list[index]
+                if a == u and b == v:
+                    edges_seen[index] = True
+                    return True
+                elif not is_oriented and a == v and b == u:
+                    edges_seen[index] = True
+                    return True
+            index += 1
+        return False
+
+    def find_edge(u, v):
+        found = False
+        for j in range(len(edges_list)):
+            a, b, _ = edges_list[j]
+            if a == u and b == v:
+                if not find_next(j, u, v):
+                    edges_seen[j] = True
+                found = True
+            elif not is_oriented and a == v and b == u:
+                if not find_next(j, u, v):
+                    edges_seen[j] = True
+                found = True
+            if found:
+                break
+        return found
+
+    """
+    Check that the path goes on the edges at least one (if the path returned
+    by solve is correct
+    :param num_vertices:
+    :param edges_list:
+    :param is_oriented:
+    :param path:
+    :return:
+    """
+    if path == [] or (len(path) == 1 and 0 < path[0] < num_vertices):
+        return True
+
+    edges_seen = [False] * len(edges_list)
+    for i in range(len(path) - 1):
+        u = path[i]
+        v = path[i + 1]
+        if not find_edge(u, v):
+            return False
+
+    # Last case
+    u = path[-1]
+    v = path[0]
+    if not find_edge(u, v):
+        return False
+
+    return all(edges_seen)
 
 
 def is_eulerian(num_vertices, edges_list, is_oriented=False):
@@ -277,7 +335,6 @@ def find_feasible(num_vertices, edges_list):
 
 
 def update_graph(edges_list, f, set_pos, set_neg, M, succ):
-
     def add_edges(edges_list, src, dst, M, succ):
         if succ[src][dst] is None:
             return
@@ -319,8 +376,9 @@ def find_eulerian_cycle(num_vertices, edges_list, is_oriented=False):
             for (a, b, w) in edges_list:
                 if a in cycle:
                     idx = cycle.index(a)
-                    cycle = cycle[idx:-1] + cycle[0:idx+1]
+                    cycle = cycle[idx:-1] + cycle[0:idx + 1]
                     break
+
 
 def sort_odd(num_vertices, edges_list, odd, is_oriented):
     my_list = []
@@ -328,20 +386,19 @@ def sort_odd(num_vertices, edges_list, odd, is_oriented):
     for i in range(len(odd)):
         for j in range(i + 1, len(odd)):
             path = find_shortest_path(num_vertices, edges_list, odd[i], odd[j])
-            print(path)
             if len(path) > 2:
                 for k in odd:
                     for z in range(1, len(path)):
-                        if (path[1][0] == k):
+                        if path[1][0] == k:
                             do_continue = True
-                if (do_continue == True):
+                if do_continue:
                     do_continue = False
                     continue
             for v in range(0, len(path) - 1):
                 src, cost = path[v]  # cost from src to dst
                 dst, _ = path[v + 1]
                 my_list.append((src, dst, cost))
-    Is_read = [False] * len(odd)
+    is_read = [False] * len(odd)
     sum_unread = 0
     sum_read = 0
     index_a = 0
@@ -353,23 +410,25 @@ def sort_odd(num_vertices, edges_list, odd, is_oriented):
         for i in range(len(odd)):
             if a == odd[i]:
                 index_a = i
-                if Is_read[i]  == True:
+                if is_read[i]:
                     is_true = True
             if w == odd[i]:
                 index_w = i
-                if Is_read[i] == True:
+                if is_read[i]:
                     is_true = True
-        if (is_true == True):
+        if is_true:
             sum_read += d
             list_read.append((a, w, d))
         else:
             sum_unread += d
-            Is_read[index_a] = True
-            Is_read[index_w] = True
+            is_read[index_a] = True
+            is_read[index_w] = True
             list_unread.append((a, w, d))
-    if (sum_read < sum_unread):
+
+    if sum_read < sum_unread:
         return list_read
     return list_unread
+
 
 def eulerize(num_vertices, edges_list, is_oriented=False):
     """
@@ -382,15 +441,17 @@ def eulerize(num_vertices, edges_list, is_oriented=False):
     :param num_vertices:
     :param edges_list:
     """
-    
+
     if not is_oriented:
         '''
-        For Cheick's version use that instead:
+        # For Cheick's version use that instead:
 
-        odd = odd_vertices(num_vertices, edges_list, is_oriented)
-        tmp = sort_odd(num_vertices, edges_list, odd, is_oriented)
-        for i in range(len(tmp)):
-        edges_list.append(tmp[i])
+        odd = odd_vertices_undirected(num_vertices, edges_list)
+        print(f"odd: {odd}")
+        sorted = sort_odd(num_vertices, edges_list, odd, is_oriented)
+        print(f"sorted: {sorted}")
+        for i in range(len(sorted)):
+            edges_list.append(sorted[i])
         '''
         odd = odd_vertices_undirected(num_vertices, edges_list)
         for i in range(0, len(odd) - 1, 2):
