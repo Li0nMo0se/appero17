@@ -7,7 +7,7 @@ The snowymontreal module implements the solve function.
 
 This function's signature is `solve(is_oriented, num_vertices, edges_list)` with
 * is_oriented: is the graph oriented?
-* num_vertices: The number of vertices.
+* num_vertices: the number of vertices.
 * edges_list: the list of edges such as (**a**, **b**, **w**) is an edge (oriented or not) between **a** and **b** and its weight (cost) is **w**
 
 Returns the most optimized (less costly) path such as every edges of the graph have been visited at least once.
