@@ -40,7 +40,7 @@ from snowymontreal.solve_aux import *
 """
 
 
-def solve(is_oriented, num_vertices, edges_list):
+def solve(is_oriented, num_vertices, edge_list):
     """
     Main function of the library solve
     The path must go through every edges of the graph at least once.
