@@ -74,6 +74,8 @@ Many unit tests are made (in the file eulerian_tests.py). It tests every
 auxiliary function needed by `solve`. By this way, it is easy to improve 
 the program by iterations.
 
+`python3 -m unittest eulerian_tests.py`
+
 ## Extra
 
 ### Installation
