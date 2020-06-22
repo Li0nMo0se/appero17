@@ -33,13 +33,6 @@ You can find function such as:
 * `find_shortest_path(num_vertices, edges_list, src, dst, is_oriented=False)`
 * `floyd_warshall(num_vertices, edges_list)`
 
-## Members
-
-* cheick-tidiane.dia
-* arnaud.lassartesse
-* kenz.narainen
-* antoine.claudel
-* ilan.guenet
 
 ## Implementation
 
@@ -81,7 +74,71 @@ the program by iterations.
 
 ## Extra
 
-TODO
-Print/save graph
-Cast graph
-Get graph from osmnx bla bla
+### Installation
+
+To use those extra features, you must install some dependencies with pip3
+```bash
+pip3 install -r requirements.txt
+```
+
+### Benchmark
+
+A benchmark has been implemented to test the speed of our program. The script
+ is located in `bench.py`.
+
+```bash
+usage: bench.py [-h] [-d] [-u]
+
+optional arguments:
+  -h, --help        show this help message and exit
+  -d, --directed    Bench directed graph
+  -u, --undirected  Bench undirected graph
+```
+
+It runs the `solve` function with randomly generated graphs. These graphs
+respect the constraint of (strongly) connected. Basically, the script
+generates graphs with a specific number of vertices that increase by 50
+until reaching 250. It creates two sets of graph. The first set is for
+undirected graphs. On the ohter hand, the second one is for directed graph.
+By this way, it computes the time it takes to solve each graph and pretty
+print it at the end.
+    
+### Interface with osmnx
+
+Osmnx allows users to get graphs from cities. Hence, graphs can be downloaded
+with osmnx. Then, with a cast, we can call solve with the downloaded graph.
+
+Users can use our `solve` function with real cities which makes our solution
+ useful in practice.
+ 
+```bash
+usage: solve with osmnx [-h] -c CITY [-d] [-u]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -c CITY, --city CITY  name of the city
+  -d, --directed        solve for a directed graph
+  -u, --undirected      solve for a undirected graph
+```
+ 
+Warning: for directed graph case, osmnx usually does not return a strongly
+connected graph. As a reminder, `solve` can only be called with strongly
+connected graphs. Thus, a assert will fail in most of the directed graph cases.
+
+### Graph miscellaneous
+
+In `graph.py`, some miscellaneous functions can be found.
+
+* `generate_connected_undirected_graph(num_vertices, directed=False)`
+* `print_graph(num_vertices, edges_list, is_oriented=False, name="graph")`
+* `save_graph(num_vertices, filename, edges_list, is_oriented=False, name
+="graph")`
+* `to_reg_graph(osmnx_graph, is_oriented=False)`
+
+## Members
+
+* cheick-tidiane.dia
+* arnaud.lassartesse
+* kenz.narainen
+* antoine.claudel
+* ilan.guenet
