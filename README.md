@@ -13,6 +13,8 @@ This function's signature is `solve(is_oriented, num_vertices, edges_list)` with
 Returns the most optimized (less costly) path such as every edges of the graph have been visited at least once.
 The path is a cycle. It starts and ends at the same vertex.
 
+**Warning:** The given graph must be (strongly) connected.
+
 ### Import
 
 `import snowymontreal`
@@ -121,7 +123,7 @@ optional arguments:
   -u, --undirected      solve for a undirected graph
 ```
  
-Warning: for directed graph case, osmnx usually does not return a strongly
+**Warning:** for directed graph case, osmnx usually does not return a strongly
 connected graph. As a reminder, `solve` can only be called with strongly
 connected graphs. Thus, a assert will fail in most of the directed graph cases.
 
