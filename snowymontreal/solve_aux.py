@@ -356,10 +356,11 @@ def find_eulerian_cycle(num_vertices, edges_list, is_oriented=False):
     if len(edges_list) == 0:  # empty graph
         return []
 
-    cycle = [edges_list[0][0]]  # start somewhere
+    edges_list_cpy = edges_list.copy()
+    cycle = [edges_list_cpy[0][0]]  # start somewhere
     while True:
         remaining = []
-        for (a, b, w) in edges_list:
+        for (a, b, w) in edges_list_cpy:
             if cycle[-1] == a:
                 cycle.append(b)
             elif not is_oriented and cycle[-1] == b:
@@ -369,13 +370,17 @@ def find_eulerian_cycle(num_vertices, edges_list, is_oriented=False):
         if not remaining:
             return cycle[0:-1]
 
-        edges_list = remaining
+        edges_list_cpy = remaining
         if cycle[0] == cycle[-1]:
             # Rotate the cycle so that the last state
             # has some outgoing edge in EDGES.
-            for (a, b, w) in edges_list:
+            for (a, b, w) in edges_list_cpy:
                 if a in cycle:
                     idx = cycle.index(a)
+                    cycle = cycle[idx:-1] + cycle[0:idx + 1]
+                    break
+                elif not is_oriented and b in cycle:
+                    idx = cycle.index(b)
                     cycle = cycle[idx:-1] + cycle[0:idx + 1]
                     break
 
@@ -436,7 +441,6 @@ def eulerize(num_vertices, edges_list, is_oriented=False):
     itself by adding edges.
     If the graph is already an eulerian graph. Nothing is updated.
 
-    # TODO explain the algorithm
     :param is_oriented:
     :param num_vertices:
     :param edges_list:
