@@ -19,6 +19,20 @@ The path is a cycle. It starts and ends at the same vertex.
 
 Then **solve** can be used this way: `snowymontreal.solve(...)`
 
+In addition, we allow people to use the auxiliary functions. The corresponding functions can be found in **snowymontreal.solve_aux**
+
+`import snowymontreal.solve_aux`
+
+You can find function such as:
+* `eulerize(num_vertices, edges_list, is_oriented=False)`
+* `is_valid(num_vertices, edges_list, is_oriented, path)`
+* `is_eulerian(num_vertices, edges_list, is_oriented=False)`
+* `is_eulerian_cycle(num_vertices, edges_list, is_oriented, cycle)`
+* `find_eulerian_cycle(num_vertices, edges_list, is_oriented=False)`
+* `is_connected(n, edges, is_oriented=False)`
+* `find_shortest_path(num_vertices, edges_list, src, dst, is_oriented=False)`
+* `floyd_warshall(num_vertices, edges_list)`
+
 ## Members
 
 * cheick-tidiane.dia
@@ -64,3 +78,10 @@ The implementation of the function solve has been made by iterations.
 Many unit tests are made (in the file eulerian_tests.py). It tests every 
 auxiliary function needed by `solve`. By this way, it is easy to improve 
 the program by iterations.
+
+## Extra
+
+TODO
+Print/save graph
+Cast graph
+Get graph from osmnx bla bla
