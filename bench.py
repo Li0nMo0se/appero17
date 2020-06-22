@@ -2,7 +2,6 @@ from benchit import BenchIt as bench
 import argparse
 import snowymontreal as sm
 import graph
-import sys
 
 
 def solve_directed():
