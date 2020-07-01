@@ -1,0 +1,5 @@
+city: Suresnes, FR, oriented: False
+number of vertices: 456
+number of edges: 670
+time: 0.00001s
+solved: True

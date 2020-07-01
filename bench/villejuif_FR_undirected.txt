@@ -1,0 +1,5 @@
+city: Villejuif, FR, oriented: False
+number of vertices: 541
+number of edges: 706
+time: 0.00001s
+solved: True
