@@ -1,3 +1,0 @@
-city: Suresnes, FR, oriented: True
-number of vertices: 456
-number of edges: 890
