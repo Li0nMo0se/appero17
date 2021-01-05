@@ -1,5 +1,8 @@
-# appero17
-Exercice Recherche Operationelle - Optimisation des trajets des équipes de déneigement de la ville de Montréal
+# Operational research on graphs
+
+Optimization of the routes of snow clearance teams in the city of Montreal.
+
+The exercise focuses the city of Montreal. However, as it is an exercise of graphs processing it could be applied to any graph of any city.
 
 ## Snowymontreal library
 
@@ -116,7 +119,7 @@ Users can use our `solve` function with real cities which makes our solution
  useful in practice.
  
 ```bash
-usage: solve with osmnx [-h] -c CITY [-d] [-u]
+usage: solve_osmnx.py [-h] -c CITY [-d] [-u]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -135,8 +138,7 @@ In `graph.py`, some miscellaneous functions can be found.
 
 * `generate_connected_undirected_graph(num_vertices, directed=False)`
 * `print_graph(num_vertices, edges_list, is_oriented=False, name="graph")`
-* `save_graph(num_vertices, filename, edges_list, is_oriented=False, name
-="graph")`
+* `save_graph(num_vertices, filename, edges_list, is_oriented=False, name="graph")`
 * `to_reg_graph(osmnx_graph, is_oriented=False)`
 
 ## Members
